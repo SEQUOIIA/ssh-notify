@@ -1235,6 +1235,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "ssh-notify"
 version = "0.1.0"
 dependencies = [
+ "hostname 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "lettre 0.8.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "lettre_email 0.8.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",

@@ -25,5 +25,6 @@ impl Agent {
 pub struct Vars {
     pub user : String,
     pub r_user : String,
-    pub r_host : String
+    pub r_host : String,
+    pub hostname : String,
 }
