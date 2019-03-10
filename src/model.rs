@@ -9,15 +9,18 @@ pub enum Agent {
 }
 
 impl Agent {
-    fn send(&self, vars : Vars) -> Result<(), String> {
+    pub fn send(&self, vars : Vars) -> Result<(), String> {
         match self {
             Agent::Email(v) => {
                 v.run(vars);
-                unimplemented!()
+                Ok(())
+            },
+            Agent::Discord(v) => {
+                v.run(vars);
+                Ok(())
             }
-            _ => {}
+            Agent::None => Ok(())
         }
-        unimplemented!()
     }
 }
 

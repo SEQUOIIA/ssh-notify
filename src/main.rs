@@ -19,8 +19,22 @@ fn main() {
     setup();
     let conf = config::config();
     let vars = get_pam_vars();
-    println!("{:?}", vars);
-    println!("{:?}", conf);
+
+    if let Some(agents) = conf.agents {
+        if let Some(discords) = agents.discord {
+            for discord in discords.iter() {
+                let disc : model::Agent = model::Agent::Discord(agent::Discord {data: discord.clone()});
+                disc.send(vars.clone());
+            }
+        }
+
+        if let Some(emails) = agents.email {
+            for email in emails.iter() {
+                let email : model::Agent = model::Agent::Email(agent::Email {data: email.clone()});
+                email.send(vars.clone());
+            }
+        }
+    }
 }
 
 
@@ -41,5 +55,5 @@ fn setup() {
 
 #[cfg(not(debug_assertions))]
 fn setup() {
-
+    std::env::set_var("RUST_LOG", "trace");
 }

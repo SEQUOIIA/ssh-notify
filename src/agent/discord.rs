@@ -7,12 +7,12 @@ pub struct Discord {
 }
 
 impl Discord {
-    pub fn run(self, vars : model::Vars) {
+    pub fn run(&self, vars : model::Vars) {
         let client = reqwest::ClientBuilder::new()
             .build()
             .unwrap();
 
-        let url = self.data.webhook_url.unwrap();
+        let url = self.data.webhook_url.as_ref().unwrap();
 
         let mut res = client.post(url.as_str())
             .header("Content-Type", "application/json")
