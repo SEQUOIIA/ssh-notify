@@ -8,12 +8,16 @@ extern crate reqwest;
 extern crate lettre;
 extern crate lettre_email;
 extern crate hostname;
+#[macro_use]
+extern crate log4rs;
 
 mod config;
 mod model;
 pub mod agent;
 
 use std::env::{var};
+use std::env::current_exe;
+use std::fs::{OpenOptions};
 
 fn main() {
     setup();
@@ -56,4 +60,18 @@ fn setup() {
 #[cfg(not(debug_assertions))]
 fn setup() {
     std::env::set_var("RUST_LOG", "trace");
+    let path = current_exe().unwrap();
+    let log_path = path.parent().unwrap().join("ssh_notify-log");
+
+    let logfile = log4rs::append::file::FileAppender::builder()
+        .encoder(Box::new(log4rs::encode::pattern::PatternEncoder::new("{l} - {m}\n")))
+        .build(log_path).unwrap();
+
+    let conf = log4rs::config::Config::builder()
+        .appender(log4rs::config::Appender::builder().build("logfile", Box::new(logfile)))
+        .build(log4rs::config::Root::builder()
+            .appender("logfile")
+            .build(log::LevelFilter::Trace)).unwrap();
+
+    log4rs::init_config(conf).unwrap();
 }
