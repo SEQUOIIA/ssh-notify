@@ -20,3 +20,21 @@ impl Discord {
             .send().unwrap();
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_discord() {
+        let conf = config::config();
+        let discconf = conf.agents.as_ref().unwrap().discord.as_ref().unwrap()[0].clone();
+        let discord = Discord {data: discconf};
+
+        discord.run(model::Vars {
+            user: "user".to_string(),
+            r_user: "remote user".to_string(),
+            r_host: "remote host".to_string()
+        });
+    }
+}

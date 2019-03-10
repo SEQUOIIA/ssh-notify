@@ -3,25 +3,25 @@ use std::io::{Read};
 use std::env::current_exe;
 use log::{error};
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Config {
     pub log : Option<bool>,
     pub log_path : Option<String>,
     pub agents : Option<Agents>,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Agents {
     pub discord : Option<Vec<ConfigDiscord>>,
     pub email : Option<Vec<ConfigEmail>>,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct ConfigDiscord {
     pub webhook_url : Option<String>
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct ConfigEmail {
     pub smtp_auth_user : Option<String>,
     pub smtp_auth_pass : Option<String>,
