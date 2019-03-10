@@ -44,11 +44,10 @@ fn main() {
 
 fn get_pam_vars() -> model::Vars {
     let user = var("PAM_USER").expect("PAM ENV(PAM_USER) not found");
-    let ruser = var("PAM_RUSER").expect("PAM ENV(PAM_RUSER) not found");
     let rhost = var("PAM_RHOST").expect("PAM ENV(PAM_RHOST) not found");
     let hostname_v = hostname::get_hostname().unwrap();
 
-    model::Vars {user, r_user: ruser, r_host: rhost, hostname: hostname_v}
+    model::Vars {user, r_host: rhost, hostname: hostname_v}
 }
 
 #[cfg(debug_assertions)]

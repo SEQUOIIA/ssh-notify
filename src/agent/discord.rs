@@ -33,7 +33,6 @@ mod tests {
 
         discord.run(model::Vars {
             user: "user".to_string(),
-            r_user: "remote user".to_string(),
             r_host: "remote host".to_string(),
             hostname: "test-host".to_string(),
         });
