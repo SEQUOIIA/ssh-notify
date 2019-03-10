@@ -16,7 +16,7 @@ impl Discord {
 
         let mut res = client.post(url.as_str())
             .header("Content-Type", "application/json")
-            .body(format!("{{\"content\": \"SSH Login: {} from {} on {}\"}}", vars.user, vars.r_host, ""))
+            .body(format!("{{\"content\": \"SSH Login: {} from {} on {}\"}}", vars.user, vars.r_host, vars.hostname))
             .send().unwrap();
     }
 }

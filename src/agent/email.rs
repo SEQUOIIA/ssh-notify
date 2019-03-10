@@ -9,7 +9,7 @@ pub struct Email {
 
 impl Email {
     pub fn run(&self, vars : model::Vars) {
-        let msg = format!("SSH Login: {} from {} on {}", vars.user, vars.r_host, "");
+        let msg = format!("SSH Login: {} from {} on {}", vars.user, vars.r_host, vars.hostname);
         let payload = lettre_email::EmailBuilder::new()
             .to(self.data.recepient.as_ref().unwrap().as_str())
             .from(self.data.sender.as_ref().unwrap().as_str())

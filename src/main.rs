@@ -73,7 +73,7 @@ fn setup() {
         .appender(log4rs::config::Appender::builder().build("logfile", Box::new(logfile)))
         .build(log4rs::config::Root::builder()
             .appender("logfile")
-            .build(log::LevelFilter::Trace)).unwrap();
+            .build(log::LevelFilter::Info)).unwrap();
 
     log4rs::init_config(conf).unwrap();
 }
