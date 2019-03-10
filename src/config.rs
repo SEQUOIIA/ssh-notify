@@ -31,11 +31,12 @@ pub struct ConfigEmail {
 }
 
 pub fn config() -> Config {
+    let path = current_exe().unwrap();
     let mut config_file = OpenOptions::new()
         .read(true)
         .write(true)
         .create(true)
-        .open("config.toml").unwrap();
+        .open(path.parent().unwrap().join("config.toml")).unwrap();
 
     let mut buf = Vec::new();
     config_file.read_to_end(&mut buf).expect("Something went wrong while reading config file");
