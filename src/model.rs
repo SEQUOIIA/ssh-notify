@@ -29,4 +29,5 @@ pub struct Vars {
     pub user : String,
     pub r_host : String,
     pub hostname : String,
+    pub pam_type : String,
 }

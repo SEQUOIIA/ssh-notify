@@ -24,18 +24,20 @@ fn main() {
     let conf = config::config();
     let vars = get_pam_vars();
 
-    if let Some(agents) = conf.agents {
-        if let Some(discords) = agents.discord {
-            for discord in discords.iter() {
-                let disc : model::Agent = model::Agent::Discord(agent::Discord {data: discord.clone()});
-                disc.send(vars.clone());
+    if !vars.pam_type.contains("close_session") {
+        if let Some(agents) = conf.agents {
+            if let Some(discords) = agents.discord {
+                for discord in discords.iter() {
+                    let disc : model::Agent = model::Agent::Discord(agent::Discord {data: discord.clone()});
+                    disc.send(vars.clone());
+                }
             }
-        }
 
-        if let Some(emails) = agents.email {
-            for email in emails.iter() {
-                let email : model::Agent = model::Agent::Email(agent::Email {data: email.clone()});
-                email.send(vars.clone());
+            if let Some(emails) = agents.email {
+                for email in emails.iter() {
+                    let email : model::Agent = model::Agent::Email(agent::Email {data: email.clone()});
+                    email.send(vars.clone());
+                }
             }
         }
     }
@@ -45,9 +47,10 @@ fn main() {
 fn get_pam_vars() -> model::Vars {
     let user = var("PAM_USER").expect("PAM ENV(PAM_USER) not found");
     let rhost = var("PAM_RHOST").expect("PAM ENV(PAM_RHOST) not found");
+    let pamtype = var("PAM_TYPE").expect("PAM ENV(PAM_RHOST) not found");
     let hostname_v = hostname::get_hostname().unwrap();
 
-    model::Vars {user, r_host: rhost, hostname: hostname_v}
+    model::Vars {user, r_host: rhost, hostname: hostname_v, pam_type: pamtype}
 }
 
 #[cfg(debug_assertions)]
@@ -58,7 +61,7 @@ fn setup() {
 
 #[cfg(not(debug_assertions))]
 fn setup() {
-    std::env::set_var("RUST_LOG", "trace");
+    std::env::set_var("RUST_LOG", "info");
     let path = current_exe().unwrap();
     let log_path = path.parent().unwrap().join("ssh_notify-log");
 

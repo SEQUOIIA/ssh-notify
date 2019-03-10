@@ -46,6 +46,7 @@ mod tests {
             user: "user".to_string(),
             r_host: "remote host".to_string(),
             hostname: "test-host".to_string(),
+            pam_type: "connect".to_string(),
         });
     }
 }
