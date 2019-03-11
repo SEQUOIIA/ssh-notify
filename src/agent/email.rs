@@ -35,20 +35,25 @@ impl Email {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::env::current_exe;
 
     #[test]
     fn test_agent_email() {
-        /*
         let conf = config::config();
-        let emailconf = conf.agents.as_ref().unwrap().email.as_ref().unwrap()[0].clone();
-        let email = Email {data: emailconf};
+        if let Some(agents) = conf.agents {
+            for agent in agents {
+                if let model::Agent::Email(v) = agent {
+                    v.run(model::Vars {
+                        user: "user".to_string(),
+                        r_host: "remote host".to_string(),
+                        hostname: "test-host".to_string(),
+                        pam_type: "connect".to_string(),
+                        is_whitelisted: false
+                    });
+                    break;
+                }
+            }
+        }
 
-        email.run(model::Vars {
-            user: "user".to_string(),
-            r_host: "remote host".to_string(),
-            hostname: "test-host".to_string(),
-            pam_type: "connect".to_string(),
-        });
-        */
     }
 }

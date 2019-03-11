@@ -27,17 +27,20 @@ mod tests {
 
     #[test]
     fn test_agent_discord() {
-        /*
         let conf = config::config();
-        let discconf = conf.agents.as_ref().unwrap().discord.as_ref().unwrap()[0].clone();
-        let discord = Discord {data: discconf};
-
-        discord.run(model::Vars {
-            user: "user".to_string(),
-            r_host: "remote host".to_string(),
-            hostname: "test-host".to_string(),
-            pam_type: "connect".to_string(),
-        });
-        */
+        if let Some(agents) = conf.agents {
+            for agent in agents {
+                if let model::Agent::Discord(v) = agent {
+                    v.run(model::Vars {
+                        user: "user".to_string(),
+                        r_host: "remote host".to_string(),
+                        hostname: "test-host".to_string(),
+                        pam_type: "connect".to_string(),
+                        is_whitelisted: false
+                    });
+                    break;
+                }
+            }
+        }
     }
 }
