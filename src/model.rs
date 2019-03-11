@@ -1,6 +1,6 @@
 use super::agent::{Discord, Email};
 use std::net::{Ipv4Addr, IpAddr, Ipv6Addr, ToSocketAddrs};
-use ipnet::{IpNet, Ipv4Net, Ipv6Net};
+use ipnet::{Ipv4Net, Ipv6Net};
 use std::str::FromStr;
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -41,19 +41,19 @@ pub struct Address(IpAddr);
 impl Address {
     pub fn new(val : String) -> Result<Self, String> {
         //v4
-        let mut addr = Ipv4Addr::from_str(val.as_str());
+        let addr = Ipv4Addr::from_str(val.as_str());
         if let Ok(v) = addr {
             return Ok(Self(IpAddr::V4(v)));
         }
 
         //v6
-        let mut addr = Ipv6Addr::from_str(val.as_str());
+        let addr = Ipv6Addr::from_str(val.as_str());
         if let Ok(v) = addr {
             return Ok(Self(IpAddr::V6(v)));
         }
 
         //dns lookup
-        let mut addrs = format!("{}:22", val).to_socket_addrs();
+        let addrs = format!("{}:22", val).to_socket_addrs();
         if let Ok(mut v) = addrs {
             let addr = v.next().unwrap();
             match addr.ip() {

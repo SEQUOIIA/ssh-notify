@@ -38,7 +38,7 @@ fn main() {
             for ag in agents {
                 match ag {
                     _ => {
-                        ag.send(vars.clone());
+                        ag.send(vars.clone()).unwrap();
                     }
                 }
             }
@@ -52,7 +52,7 @@ fn get_pam_vars() -> model::Vars {
     let rhost = var("PAM_RHOST").expect("PAM ENV(PAM_RHOST) not found");
     let pamtype = var("PAM_TYPE").expect("PAM ENV(PAM_RHOST) not found");
     let hostname_v = hostname::get_hostname().unwrap();
-    let mut is_whitelisted : bool = false;
+    let is_whitelisted : bool = false;
 
     model::Vars {user, r_host: rhost, hostname: hostname_v, pam_type: pamtype, is_whitelisted}
 }

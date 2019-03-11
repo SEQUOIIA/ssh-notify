@@ -14,7 +14,7 @@ impl Discord {
 
         let url = self.data.webhook_url.as_ref().unwrap();
 
-        let mut res = client.post(url.as_str())
+        let res = client.post(url.as_str())
             .header("Content-Type", "application/json")
             .body(format!("{{\"content\": \"SSH Login: {} from {} on {}\"}}", vars.user, vars.r_host, vars.hostname))
             .send().unwrap();
