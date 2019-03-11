@@ -10,6 +10,13 @@ pub struct Config {
     pub log : Option<bool>,
     pub log_path : Option<String>,
     pub agents: Option<Vec<Agent>>,
+    pub whitelisted_network: Option<WhitelistedNetwork>,
+}
+
+#[derive(Deserialize, Serialize, Debug, Clone)]
+pub struct WhitelistedNetwork {
+    pub ipv4: Option<Vec<String>>,
+    pub ipv6: Option<Vec<String>>,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -74,6 +81,7 @@ mod tests {
         let conf = Config {
             log: Some(true),
             log_path: None,
+            whitelisted_network: None,
             agents: Some(vec!(Agent::None,
                                   Agent::Discord(Discord {data: ConfigDiscord {webhook_url: Some("Wowza".to_owned())}}),
                                   Agent::Email(Email {data: ConfigEmail {

@@ -8,6 +8,7 @@ extern crate reqwest;
 extern crate lettre;
 extern crate lettre_email;
 extern crate hostname;
+extern crate ipnet;
 #[macro_use]
 extern crate log4rs;
 
@@ -22,9 +23,17 @@ use std::fs::{OpenOptions};
 fn main() {
     setup();
     let conf = config::config();
-    let vars = get_pam_vars();
+    let mut vars = get_pam_vars();
 
-    if !vars.pam_type.contains("close_session") {
+    if let Some(v) = conf.whitelisted_network.as_ref() {
+        let addr = model::Address::new(vars.r_host.clone());
+
+        if let Ok(a) = addr {
+            vars.is_whitelisted = a.is_whitelisted(v);
+        }
+    }
+
+    if !vars.pam_type.contains("close_session") && !vars.is_whitelisted {
         if let Some(agents) = conf.agents {
             for ag in agents {
                 match ag {
@@ -43,8 +52,9 @@ fn get_pam_vars() -> model::Vars {
     let rhost = var("PAM_RHOST").expect("PAM ENV(PAM_RHOST) not found");
     let pamtype = var("PAM_TYPE").expect("PAM ENV(PAM_RHOST) not found");
     let hostname_v = hostname::get_hostname().unwrap();
+    let mut is_whitelisted : bool = false;
 
-    model::Vars {user, r_host: rhost, hostname: hostname_v, pam_type: pamtype}
+    model::Vars {user, r_host: rhost, hostname: hostname_v, pam_type: pamtype, is_whitelisted}
 }
 
 #[cfg(debug_assertions)]
