@@ -1,6 +1,6 @@
 use super::agent::{Discord, Email};
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 #[serde(tag = "type", content = "args")]
 pub enum Agent {
     None,
@@ -30,4 +30,14 @@ pub struct Vars {
     pub r_host : String,
     pub hostname : String,
     pub pam_type : String,
+}
+
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_agentenum_toml() {
+        let agent : Agent = Agent::Discord(Discord { data: super::super::config::ConfigDiscord {webhook_url: None} });
+        println!("{}", toml::to_string_pretty(&agent).unwrap());
+    }
 }

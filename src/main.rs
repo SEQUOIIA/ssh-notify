@@ -26,17 +26,11 @@ fn main() {
 
     if !vars.pam_type.contains("close_session") {
         if let Some(agents) = conf.agents {
-            if let Some(discords) = agents.discord {
-                for discord in discords.iter() {
-                    let disc : model::Agent = model::Agent::Discord(agent::Discord {data: discord.clone()});
-                    disc.send(vars.clone());
-                }
-            }
-
-            if let Some(emails) = agents.email {
-                for email in emails.iter() {
-                    let email : model::Agent = model::Agent::Email(agent::Email {data: email.clone()});
-                    email.send(vars.clone());
+            for ag in agents {
+                match ag {
+                    _ => {
+                        ag.send(vars.clone());
+                    }
                 }
             }
         }

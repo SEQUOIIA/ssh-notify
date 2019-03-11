@@ -2,7 +2,7 @@ use super::super::config;
 use super::super::model;
 use lettre::EmailTransport;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Email {
     pub data : config::ConfigEmail
 }
@@ -37,7 +37,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_email() {
+    fn test_agent_email() {
         let conf = config::config();
         let emailconf = conf.agents.as_ref().unwrap().email.as_ref().unwrap()[0].clone();
         let email = Email {data: emailconf};

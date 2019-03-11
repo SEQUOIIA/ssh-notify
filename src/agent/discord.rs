@@ -1,7 +1,7 @@
 use super::super::config;
 use super::super::model;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Discord {
     pub data : config::ConfigDiscord
 }
@@ -26,7 +26,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_discord() {
+    fn test_agent_discord() {
         let conf = config::config();
         let discconf = conf.agents.as_ref().unwrap().discord.as_ref().unwrap()[0].clone();
         let discord = Discord {data: discconf};

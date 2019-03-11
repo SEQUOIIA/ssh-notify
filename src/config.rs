@@ -2,12 +2,14 @@ use std::fs::{OpenOptions};
 use std::io::{Read};
 use std::env::current_exe;
 use log::{error};
+use super::model::{Agent};
+use super::agent::{Discord, Email};
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Config {
     pub log : Option<bool>,
     pub log_path : Option<String>,
-    pub agents : Option<Agents>,
+    pub agents: Option<Vec<Agent>>,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -61,4 +63,31 @@ pub fn config() -> Config {
     }
 
     config
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_config_toml() {
+        let conf = Config {
+            log: Some(true),
+            log_path: None,
+            agents: Some(vec!(Agent::None,
+                                  Agent::Discord(Discord {data: ConfigDiscord {webhook_url: Some("Wowza".to_owned())}}),
+                                  Agent::Email(Email {data: ConfigEmail {
+                                      smtp_auth_pass: Some("test".to_owned()),
+                                      smtp_auth_user: None,
+                                      smtp_host: None,
+                                      recepient: None,
+                                      sender: None
+                                  }})
+            )
+            ),
+        };
+
+        println!("{}", toml::to_string_pretty(&conf).unwrap());
+
+    }
 }
