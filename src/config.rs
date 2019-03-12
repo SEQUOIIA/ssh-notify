@@ -51,24 +51,6 @@ pub fn config() -> Config {
     config_file.read_to_end(&mut buf).expect("Something went wrong while reading config file");
     let mut config : Config = toml::from_slice(&buf).unwrap();
 
-    if let Some(v) = config.log {
-        if v {
-            if let None = config.log_path {
-                let path = current_exe();
-                match path {
-                    Ok(p) => {
-                        let path_dir = p.parent().unwrap().join("log").to_str().unwrap().to_owned();
-                        config.log_path = Some(format!("{}", path_dir));
-                    },
-                    Err(_) => {
-                        error!("Unable to get path of currently running binary. Since no log path has been specified, logging will be disabled.");
-                        config.log = Some(false);
-                    }
-                }
-            }
-        }
-    }
-
     config
 }
 
