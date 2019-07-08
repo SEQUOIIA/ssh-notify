@@ -1,6 +1,6 @@
 use super::super::config;
 use super::super::model;
-use lettre::EmailTransport;
+use lettre::{SmtpClient, Transport};
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Email {
@@ -18,7 +18,7 @@ impl Email {
             .build()
             .unwrap();
 
-        let mut mailer = lettre::SmtpTransport::simple_builder(self.data.smtp_host.as_ref().unwrap().as_str())
+        let mut mailer = SmtpClient::new_simple(self.data.smtp_host.as_ref().unwrap().as_str())
             .unwrap()
             .credentials(lettre::smtp::authentication::Credentials::new(
                 self.data.smtp_auth_user.as_ref().unwrap().clone(),
@@ -26,9 +26,9 @@ impl Email {
             ))
             .smtp_utf8(true)
             .authentication_mechanism(lettre::smtp::authentication::Mechanism::Login)
-            .build();
+            .transport();
 
-        let res = mailer.send(&payload).unwrap();
+        mailer.send(payload.into()).unwrap();
     }
 }
 
