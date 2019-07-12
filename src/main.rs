@@ -19,6 +19,7 @@ pub mod agent;
 use std::env::{var};
 use std::env::current_exe;
 use std::fs::{OpenOptions};
+use std::process::Command;
 use log::{info};
 
 fn main() {
@@ -44,15 +45,16 @@ fn main() {
     if !vars.pam_type.contains("close_session") && !vars.is_whitelisted {
         info!(target: "SSH-LOGIN", "{} from {} on {}", vars.user, vars.r_host, vars.hostname);
 
-        if let Some(agents) = conf.agents {
-            for ag in agents {
-                match ag {
-                    _ => {
-                        ag.send(vars.clone()).unwrap();
-                    }
-                }
-            }
-        }
+        let path = current_exe().unwrap();
+        let providers_child_path = path.parent().unwrap().join("ssh-notify-agent");
+
+        let _providers_child = Command::new(providers_child_path)
+            .env("PAM_USER", vars.user)
+            .env("PAM_RHOST", vars.r_host)
+            .env("PAM_TYPE", vars.pam_type)
+            .spawn()
+            .expect("Failed to exec providers_child");
+
     }
 }
 
