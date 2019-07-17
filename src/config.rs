@@ -9,6 +9,7 @@ use super::agent::{Discord, Email};
 pub struct Config {
     pub log : Option<bool>,
     pub log_path : Option<String>,
+    pub syslog_enable : Option<bool>,
     pub agents: Option<Vec<Agent>>,
     pub whitelisted_network: Option<WhitelistedNetwork>,
 }
@@ -51,7 +52,15 @@ pub fn config() -> Config {
     config_file.read_to_end(&mut buf).expect("Something went wrong while reading config file");
     let mut config : Config = toml::from_slice(&buf).unwrap();
 
-    config
+    defaults(config)
+}
+
+fn defaults(mut config : Config) -> Config {
+    if config.syslog_enable.as_ref().is_none() {
+        config.syslog_enable = Some(false);
+    }
+
+    return config;
 }
 
 #[cfg(test)]
@@ -63,6 +72,7 @@ mod tests {
         let conf = Config {
             log: Some(true),
             log_path: None,
+            syslog_enable: Some(false),
             whitelisted_network: None,
             agents: Some(vec!(Agent::None,
                                   Agent::Discord(Discord {data: ConfigDiscord {webhook_url: Some("Wowza".to_owned())}}),

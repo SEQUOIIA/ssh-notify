@@ -11,9 +11,10 @@ extern crate hostname;
 extern crate ipnet;
 #[macro_use]
 extern crate log4rs;
-#[cfg(syslog_enabled)]
+
+#[cfg(feature = "syslog_enabled")]
 #[cfg(target_os = "linux")]
-extern crate syslog;
+extern crate log4rs_syslog;
 
 mod config;
 mod model;
@@ -88,6 +89,7 @@ fn logging(path_v : Option<&str>) {
 
 #[cfg(not(debug_assertions))]
 fn logging(path_v : Option<&str>) {
+    let syslog_enable : bool = config::config().syslog_enable.as_ref().unwrap().clone();
     let path = current_exe().unwrap();
     let log_path = match path_v {
         Some(v) => std::path::Path::new(v).to_path_buf(),
@@ -98,12 +100,45 @@ fn logging(path_v : Option<&str>) {
         .encoder(Box::new(log4rs::encode::pattern::PatternEncoder::new("{l} | {t} :: {m}\n")))
         .build(log_path).unwrap();
 
-    let conf = log4rs::config::Config::builder()
-        .appender(log4rs::config::Appender::builder().build("logfile", Box::new(logfile)))
-        .logger(log4rs::config::Logger::builder().build("SSH-LOGIN", log::LevelFilter::Info))
-        .build(log4rs::config::Root::builder()
+    let mut conf = log4rs::config::Config::builder()
+        .appender(log4rs::config::Appender::builder().build("logfile", Box::new(logfile)));
+
+    if cfg!(feature = "syslog_enabled") && syslog_enable {
+        let encoder = Box::new(log4rs::encode::pattern::PatternEncoder::new("{M} - {m}"));
+        let syslog_appender = Box::new(
+            log4rs_syslog::SyslogAppender::builder()
+            .encoder(encoder)
+            .openlog(
+                "ssh-notify",
+                log4rs_syslog::LogOption::LOG_PID,
+                log4rs_syslog::Facility::Daemon,
+            )
+            .build(),
+        );
+
+        conf = conf.appender(log4rs::config::Appender::builder().build(
+            "syslog",
+            syslog_appender
+        ));
+    }
+
+
+    let rootBuilder;
+    if cfg!(feature = "syslog_enabled") && syslog_enable {
+        rootBuilder = log4rs::config::Root::builder()
+            .appender("syslog")
             .appender("logfile")
-            .build(log::LevelFilter::Off)).unwrap();
+            .build(log::LevelFilter::Off);
+    } else {
+        rootBuilder = log4rs::config::Root::builder()
+            .appender("logfile")
+            .build(log::LevelFilter::Off);    
+    }
+    
+    let conf = conf
+        .logger(log4rs::config::Logger::builder().build("SSH-LOGIN", log::LevelFilter::Info))
+        .build(rootBuilder).unwrap();
 
     log4rs::init_config(conf).unwrap();
+    
 }

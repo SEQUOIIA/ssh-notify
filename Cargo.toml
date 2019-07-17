@@ -19,6 +19,7 @@ ipnet = "2.0"
 
 [target.'cfg(unix)'.dependencies]
 syslog = "^4.0"
+log4rs-syslog = "3.0"
 
 [[bin]]
 name = "ssh-notify"
