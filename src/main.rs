@@ -11,6 +11,9 @@ extern crate hostname;
 extern crate ipnet;
 #[macro_use]
 extern crate log4rs;
+#[cfg(syslog_enabled)]
+#[cfg(target_os = "linux")]
+extern crate syslog;
 
 mod config;
 mod model;
