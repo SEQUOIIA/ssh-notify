@@ -12,7 +12,7 @@ extern crate ipnet;
 #[macro_use]
 extern crate log4rs;
 
-#[cfg(feature = "syslog_enabled")]
+#[cfg(feature = "syslog")]
 #[cfg(target_os = "linux")]
 extern crate log4rs_syslog;
 
@@ -103,7 +103,7 @@ fn logging(path_v : Option<&str>) {
     let mut conf = log4rs::config::Config::builder()
         .appender(log4rs::config::Appender::builder().build("logfile", Box::new(logfile)));
 
-    if cfg!(feature = "syslog_enabled") && syslog_enable {
+    if cfg!(feature = "syslog") && syslog_enable {
         let encoder = Box::new(log4rs::encode::pattern::PatternEncoder::new("{M} - {m}"));
         let syslog_appender = Box::new(
             log4rs_syslog::SyslogAppender::builder()
@@ -123,21 +123,21 @@ fn logging(path_v : Option<&str>) {
     }
 
 
-    let rootBuilder;
-    if cfg!(feature = "syslog_enabled") && syslog_enable {
-        rootBuilder = log4rs::config::Root::builder()
+    let root_builder;
+    if cfg!(feature = "syslog") && syslog_enable {
+        root_builder = log4rs::config::Root::builder()
             .appender("syslog")
             .appender("logfile")
             .build(log::LevelFilter::Off);
     } else {
-        rootBuilder = log4rs::config::Root::builder()
+        root_builder = log4rs::config::Root::builder()
             .appender("logfile")
             .build(log::LevelFilter::Off);    
     }
     
     let conf = conf
         .logger(log4rs::config::Logger::builder().build("SSH-LOGIN", log::LevelFilter::Info))
-        .build(rootBuilder).unwrap();
+        .build(root_builder).unwrap();
 
     log4rs::init_config(conf).unwrap();
     

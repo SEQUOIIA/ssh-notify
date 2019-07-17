@@ -18,7 +18,6 @@ log4rs = "0.8"
 ipnet = "2.0"
 
 [target.'cfg(unix)'.dependencies]
-syslog = "^4.0"
 log4rs-syslog = "3.0"
 
 [[bin]]
@@ -30,4 +29,4 @@ name = "ssh-notify-agent"
 path = "src/agent-bin.rs"
 
 [features]
-syslog_enabled = []
+syslog = []
