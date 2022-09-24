@@ -9,8 +9,6 @@ extern crate lettre;
 extern crate lettre_email;
 extern crate hostname;
 extern crate ipnet;
-#[macro_use]
-extern crate log4rs;
 
 mod config;
 mod model;
@@ -20,7 +18,7 @@ use std::env::{var};
 
 fn main() {
     let conf = config::config();
-    let mut vars = get_pam_vars();
+    let vars = get_pam_vars();
 
     if let Some(agents) = conf.agents {
         for ag in agents {
@@ -37,7 +35,7 @@ fn get_pam_vars() -> model::Vars {
     let user = var("PAM_USER").expect("PAM ENV(PAM_USER) not found");
     let rhost = var("PAM_RHOST").expect("PAM ENV(PAM_RHOST) not found");
     let pamtype = var("PAM_TYPE").expect("PAM ENV(PAM_TYPE) not found");
-    let hostname_v = hostname::get_hostname().unwrap();
+    let hostname_v = hostname::get().unwrap().into_string().unwrap();
     let is_whitelisted : bool = false;
 
     model::Vars {user, r_host: rhost, hostname: hostname_v, pam_type: pamtype, is_whitelisted}

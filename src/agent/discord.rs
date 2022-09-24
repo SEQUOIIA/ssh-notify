@@ -8,7 +8,7 @@ pub struct Discord {
 
 impl Discord {
     pub fn run(&self, vars : model::Vars) {
-        let client = reqwest::ClientBuilder::new()
+        let client = reqwest::blocking::ClientBuilder::new()
             .build()
             .unwrap();
 
